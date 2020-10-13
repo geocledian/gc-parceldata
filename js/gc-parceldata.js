@@ -415,10 +415,16 @@ Vue.component('gc-parceldata', {
                   return;
               }
 
+              // let tmpParcels = [];
               for (var i = 0; i < tmp.content.length; i++) {
                   var item = tmp.content[i];
+                  //tmpParcels.push(item);
                   this.parcels.push(item);
               }
+
+              //only this triggers the setter of this.parcels 
+              // not the push method!
+              //this.parcels = tmpParcels;
 
               // select first parcel if not set
               console.debug("selected parcel id: "+ this.selectedParcelId);
