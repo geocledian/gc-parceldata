@@ -1,7 +1,7 @@
 /*
  Vue.js Geocledian parcel data component
- created:     2020-04-30, jsommer
- last update: 2020-06-04, jsommer
+ created: 2020-04-30, jsommer
+ updated: 2021-04-13, jsommer
  version: 0.5
 */
 "use strict";
@@ -224,6 +224,16 @@ Vue.component('gc-parceldata', {
           return this.gcApiSecure;
       }
     },
+    apiMajorVersion: {
+      get () {
+        if (this.apiBaseUrl === "/agknow/api/v3") {
+          return 3
+        }
+        if (this.apiBaseUrl === "/agknow/api/v4") {
+          return 4
+        }
+      }
+    },
     filterString: {
         get: function () {
           // TODO offset + limit + paging
@@ -439,37 +449,56 @@ Vue.component('gc-parceldata', {
     getParcelsAttributes(parcel_id) {
 
       const endpoint = "/parcels/" + parcel_id;
-      let xmlHttp = new XMLHttpRequest();
-      let async = true;
 
       //Show requests on the DEBUG console for developers
       console.debug("getParcelsAttributes()");
       console.debug("GET " + this.getApiUrl(endpoint));
+      
+      // Axios implement start
+      axios({
+        method: 'GET',
+        url: this.getApiUrl(endpoint),
+      }).then(function (response) {
+        if(response.status === 200){
+          var tmp = response.data;
+          var row = this.getCurrentParcel();
 
-      xmlHttp.onreadystatechange = function () {
-        if (xmlHttp.readyState == 4) {
-          var tmp = JSON.parse(xmlHttp.responseText);
-          var row = this.currentParcel;
-
-          if (tmp.content.length > 0) {
+          let obj;
+          let resultNotEmpty;
+          if (this.apiMajorVersion === 3) {
+            console.debug(this.apiMajorVersion)
+            resultNotEmpty = tmp.content.length > 0 ? true : false;
+            obj = tmp.content[0];
+          }
+          if (this.apiMajorVersion === 4) {
+            obj = tmp.content;
+            resultNotEmpty = obj !== undefined ? true : false;
+          }
+          if (resultNotEmpty) {
             console.debug(row);
             // add new attributes via Vue.set
             // it's ok always to use the first element, because it has been filtered
             // by unique parcel_id
-            Vue.set(row, "area", tmp.content[0].area);
-            Vue.set(row, "planting", tmp.content[0].planting);
-            Vue.set(row, "harvest", tmp.content[0].harvest);
-            Vue.set(row, "startdate", tmp.content[0].startdate);
-            Vue.set(row, "enddate", tmp.content[0].enddate);
-            Vue.set(row, "lastupdate", tmp.content[0].lastupdate);
-            // Vue.set(row, "centroid", tmp.content[0].centroid);
-            // Vue.set(row, "geometry", tmp.content[0].geometry);
-          }
+            Vue.set(row, "area", obj.area);
+            Vue.set(row, "planting", obj.planting);
+            Vue.set(row, "harvest", obj.harvest);
+            Vue.set(row, "startdate", obj.startdate);
+            Vue.set(row, "enddate", obj.enddate);
+            Vue.set(row, "lastupdate", obj.lastupdate);
+            Vue.set(row, "centroid", obj.centroid);
+            Vue.set(row, "geometry", obj.geometry);
 
+            this.map_addParcel(obj.geometry);
+
+            this.getParcelsProductData(parcel_id, this.selectedProduct, this.selectedSource);
+          }
+        } else {
+          console.log(response)
         }
-      }.bind(this);
-      xmlHttp.open("GET", this.getApiUrl(endpoint), async);
-      xmlHttp.send();
+      }.bind(this)).catch(err => {
+        console.log("err= " + err);
+      })
+      // Axios implement end
     },
     toggleParcelData() {
       this.gcWidgetCollapsed = !this.gcWidgetCollapsed;
