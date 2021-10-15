@@ -145,7 +145,7 @@ Vue.component('gc-parceldata', {
                   <div :class="['field', 'gc-parcel-field-'+gcLayout]" v-show="availableFields.includes('parcelId')">
                     <label class="label is-grey is-small"> {{ $t('fields.id') }} - {{ $t('fields.name') }} </label>
                     <div class="control">
-                      <div class="select is-small" style="max-width: 20em;" v-if="currentParcel">
+                      <div class="select is-small" style="max-width: 15em;" v-if="currentParcel">
                         <select v-model="currentParcel">
                           <option v-for="item in parcels" v-bind:value="item">
                             {{  item.parcel_id + "  -  " + item.name}}
