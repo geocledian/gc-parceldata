@@ -403,8 +403,12 @@ Vue.component('gc-parceldata', {
       this.selectedParcelId = newValue.parcel_id;
       console.debug("currentParcelChange - gc-parceldata");
       console.debug(newValue);
+      // phenology
       this.$root.$emit("phStartdateChange", newValue.planting);
       this.$root.$emit("phEnddateChange", newValue.harvest);
+      // zones
+      this.$root.$emit("startdateChange", newValue.planting);
+      this.$root.$emit("enddateChange", newValue.harvest);
     },
     currentLanguage(newValue, oldValue) {
       this.changeLanguage();
@@ -467,6 +471,7 @@ Vue.component('gc-parceldata', {
 
       xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4) {
+          console.debug(xmlHttp.responseText);
           var tmp = JSON.parse(xmlHttp.responseText);
 
           if ("count" in tmp) {
