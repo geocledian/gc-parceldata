@@ -1,5 +1,6 @@
 .gc-parcel-field-horizontal {
     padding: 1em;
+    margin-bottom: 0 !important;
 }
 .gc-parcel-field-vertical {
     margin: 0.25em !important;
