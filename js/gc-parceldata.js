@@ -132,8 +132,7 @@ Vue.component('gc-parceldata', {
   },
   template: `<div :id="this.gcWidgetId" class="">
 
-                <p :class="['gc-options-title', 'is-size-6', 'is-inline-block', gcWidgetCollapsed ? 'is-grey' : 'is-orange']" 
-                  style="cursor: pointer; margin-bottom: 1em;"    
+                <p :class="['gc-options-title', 'is-size-6', 'is-inline-block', gcWidgetCollapsed ? 'is-grey' : 'is-orange']"  
                   v-on:click="toggleParcelData" 
                   v-show="availableOptions.includes('widgetTitle')">
                     <!--i class="fas fa-th fa-sm"></i --> {{ $t('options.title')}}
