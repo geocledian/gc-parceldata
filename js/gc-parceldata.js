@@ -9,8 +9,10 @@
 //language strings
 const gcParcelViewLocales = {
   "en": {
-    "options": { "title": "Parcel Details" },
-    "fields": { 
+    "options": {
+      "title": "Parcel Details"
+    },
+    "fields": {
       "id": "ID",
       "crop": "Crop",
       "entity": "Entity",
@@ -21,9 +23,9 @@ const gcParcelViewLocales = {
       "userdata": "User data",
       "promotion": "Promotion"
     },
-    "pagination": { 
-      "title": "Pagination", 
-      "of": "of", 
+    "pagination": {
+      "title": "Pagination",
+      "of": "of",
       "previous": "Previous",
       "next": "Next",
       "start": "Start",
@@ -31,8 +33,10 @@ const gcParcelViewLocales = {
     }
   },
   "de": {
-    "options": { "title": "Felddetails" },
-    "fields": { 
+    "options": {
+      "title": "Felddetails"
+    },
+    "fields": {
       "id": "Nr",
       "crop": "Fruchtart",
       "entity": "Entität",
@@ -43,13 +47,37 @@ const gcParcelViewLocales = {
       "userdata": "Zusatzdaten",
       "promotion": "Demo"
     },
-    "pagination": { 
-      "title": "Navigation", 
+    "pagination": {
+      "title": "Navigation",
       "of": "von",
       "previous": "Vorherige",
       "next": "Nächste",
       "start": "Anfang",
       "end": "Ende"
+    }
+  },
+  "lt": {
+    "options": {
+      "title": "Lauko riba"
+    },
+    "fields": {
+      "id": "ID",
+      "crop": "Pasėlis",
+      "entity": "Subjektas",
+      "name": "Pavadinimas",
+      "area": "Plotas",
+      "planting": "Pasėta",
+      "harvest": "Derlius nuimtas",
+      "userdata": "User data",
+      "promotion": "Promotion"
+    },
+    "pagination": {
+      "title": "Paginacija",
+      "of": "of",
+      "previous": "Previous",
+      "next": "Next",
+      "start": "Start",
+      "end": "End"
     }
   },
 }
@@ -80,20 +108,22 @@ Vue.component('gc-parceldata', {
     gcApiSecure: {
       type: Boolean,
       default: true
-    },   
+    },
     gcInitialLoading: {
       type: Boolean,
       default: true // true: load first parcels by filter or false: wait for parcels to be set externally: gcParcels
     },
-    gcParcels: { 
-      type: Array, 
-      default: function () { return [] }
+    gcParcels: {
+      type: Array,
+      default: function () {
+        return []
+      }
     },
-    gcVisibleParcelIds: {      
+    gcVisibleParcelIds: {
       type: String,
       default: ''
     },
-    gcSelectedParcelId: {      
+    gcSelectedParcelId: {
       type: String,
       default: ''
     },
@@ -247,19 +277,24 @@ Vue.component('gc-parceldata', {
   data: function () {
     console.debug("parceldata! - data()");
     return {
-        total_parcel_count: 0,
-        pagingStep: 250,
-        promotion: undefined,
-        crop: "",
-        entity: "",
-        name: "",
-        planting: "",
-        harvest: "",
-        layoutCSSMap: { "alignment": {"vertical": "is-inline-block", "horizontal": "is-flex" }},
-        isloading: false
+      total_parcel_count: 0,
+      pagingStep: 250,
+      promotion: undefined,
+      crop: "",
+      entity: "",
+      name: "",
+      planting: "",
+      harvest: "",
+      layoutCSSMap: {
+        "alignment": {
+          "vertical": "is-inline-block",
+          "horizontal": "is-flex"
+        }
+      },
+      isloading: false
     }
   },
-  i18n: { 
+  i18n: {
     locale: this.currentLanguage,
     messages: gcParcelViewLocales
   },
@@ -270,7 +305,7 @@ Vue.component('gc-parceldata', {
   /* when vue component is mounted (ready) on DOM node */
   mounted: function () {
     console.debug("parceldata! - mounted()");
-    
+
     try {
       this.changeLanguage();
     } catch (ex) {}
@@ -279,26 +314,26 @@ Vue.component('gc-parceldata', {
   computed: {
     apiKey: {
       get: function () {
-          return this.gcApikey;
+        return this.gcApikey;
       }
     },
     apiHost: {
-        get: function () {
-            return this.gcHost;
-        }
+      get: function () {
+        return this.gcHost;
+      }
     },
     apiBaseUrl: {
-        get: function () {
-            return this.gcApiBaseUrl;
+      get: function () {
+        return this.gcApiBaseUrl;
       }
     },
     apiSecure: {
       get: function () {
-          return this.gcApiSecure;
+        return this.gcApiSecure;
       }
     },
     apiMajorVersion: {
-      get () {
+      get() {
         if (this.apiBaseUrl === "/agknow/api/v3") {
           return 3
         }
@@ -313,30 +348,30 @@ Vue.component('gc-parceldata', {
       }
     },
     limit: {
-      get: function() {
+      get: function () {
         // will always reflect prop's value 
         return this.gcLimit;
       }
     },
     pagingStep: {
-      get: function() {
+      get: function () {
         // will always reflect prop's value 
         return this.limit;
       }
     },
     offset: {
-      get: function() {
+      get: function () {
         // will always reflect prop's value 
         return this.gcOffset;
       },
-      set: function (newValue) {       
+      set: function (newValue) {
         //notify root - through props it will change this.gcOffset
         this.$root.$emit('offsetChange', newValue);
       }
     },
     // only external parcels - no internal structure!
     parcels: {
-      get: function () { 
+      get: function () {
         console.debug("gc-parceldata - parcels() getter");
         return this.gcParcels;
       },
@@ -346,7 +381,7 @@ Vue.component('gc-parceldata', {
       }
     },
     visibleParcelIds: {
-      get: function () { 
+      get: function () {
         return this.gcVisibleParcelIds;
       },
       set: function (newValue) {
@@ -354,7 +389,7 @@ Vue.component('gc-parceldata', {
       }
     },
     selectedParcelId: {
-      get: function () { 
+      get: function () {
         return this.gcSelectedParcelId;
       },
       set: function (newValue) {
@@ -367,20 +402,20 @@ Vue.component('gc-parceldata', {
       }
     },
     availableOptions: {
-      get: function() {
+      get: function () {
         return (this.gcAvailableOptions.split(","));
       }
     },
     currentLanguage: {
-      get: function() {
+      get: function () {
         // will always reflect prop's value 
         return this.gcLanguage;
       },
     },
     currentParcel: {
-      get: function() {
+      get: function () {
         if (this.selectedParcelId > 0)
-          return this.parcels.filter(p=>p.parcel_id + "" == this.selectedParcelId+ "" )[0];
+          return this.parcels.filter(p => p.parcel_id + "" == this.selectedParcelId + "")[0];
         else
           return this.parcels[0]; // first element
       },
@@ -422,12 +457,12 @@ Vue.component('gc-parceldata', {
       console.debug(newValue);
       this.getParcelTotalCount(newValue);
     },
-    offset(newValue,oldValue) {
+    offset(newValue, oldValue) {
       //fetch next batch of parcels
       this.getParcelTotalCount(this.filterString);
     }
   },
-  methods: {  
+  methods: {
     getApiUrl: function (endpoint) {
       /* handles requests directly against  geocledian endpoints with API keys
           or (if gcProxy is set)
@@ -443,11 +478,11 @@ Vue.component('gc-parceldata', {
       // if (this.apiEncodeParams) {
       //   endpoint = encodeURIComponent(endpoint);
       // }
-      
+
       // with or without apikey depending on gcProxy property
-      return (this.gcProxy ? 
-                protocol + '://' + this.gcProxy + this.apiBaseUrl + endpoint  : 
-                protocol + '://' + this.gcHost + this.apiBaseUrl + endpoint + "?key="+this.apiKey);
+      return (this.gcProxy ?
+        protocol + '://' + this.gcProxy + this.apiBaseUrl + endpoint :
+        protocol + '://' + this.gcHost + this.apiBaseUrl + endpoint + "?key=" + this.apiKey);
     },
     getParcelTotalCount: function (filterString) {
 
@@ -456,7 +491,7 @@ Vue.component('gc-parceldata', {
 
       if (filterString) {
         params = filterString +
-                  "&count=True";
+          "&count=True";
       } else {
         params = "&count=True";
       }
@@ -500,79 +535,78 @@ Vue.component('gc-parceldata', {
     },
     getAllParcels: function (offset, filterString) {
 
-        //download in chunks of n parcels
-        let limit = this.limit; //this.pagingStep;
+      //download in chunks of n parcels
+      let limit = this.limit; //this.pagingStep;
 
-        const endpoint = "/parcels";
-        let params = "&limit=" + limit; //set limit to maximum (default 1000)
+      const endpoint = "/parcels";
+      let params = "&limit=" + limit; //set limit to maximum (default 1000)
 
-        if (offset) {
-            params = params + "&offset=" + offset;
-        }
-        if (filterString) {
-            params = params + filterString;
-        }
+      if (offset) {
+        params = params + "&offset=" + offset;
+      }
+      if (filterString) {
+        params = params + filterString;
+      }
 
-        let xmlHttp = new XMLHttpRequest();
-        let async = true;
+      let xmlHttp = new XMLHttpRequest();
+      let async = true;
 
-        //Show requests on the DEBUG console for developers
-        console.debug("getAllParcels()");
-        console.debug("GET " + this.getApiUrl(endpoint) + params);
+      //Show requests on the DEBUG console for developers
+      console.debug("getAllParcels()");
+      console.debug("GET " + this.getApiUrl(endpoint) + params);
 
-        xmlHttp.onreadystatechange = function () {
-          if (xmlHttp.readyState == 4) {
-            var tmp = JSON.parse(xmlHttp.responseText);
+      xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4) {
+          var tmp = JSON.parse(xmlHttp.responseText);
 
-            if (tmp.content == "key is not authorized") {
-                return;
-            }
+          if (tmp.content == "key is not authorized") {
+            return;
+          }
 
-            // Dont use root parcel data reference in the for loop with push!
-            var internalParcels = [];
+          // Dont use root parcel data reference in the for loop with push!
+          var internalParcels = [];
 
-            if (tmp.content.length == 0) {
-                //clear details and map
-                return;
-            }
+          if (tmp.content.length == 0) {
+            //clear details and map
+            return;
+          }
 
-            for (let i = 0; i < tmp.content.length; i++) {
-              let item = tmp.content[i];
-              internalParcels.push(item);
-            }
+          for (let i = 0; i < tmp.content.length; i++) {
+            let item = tmp.content[i];
+            internalParcels.push(item);
+          }
 
-            // now set the root's parcels in one go
-            this.parcels = internalParcels;
+          // now set the root's parcels in one go
+          this.parcels = internalParcels;
 
-            // select first parcel if not set
-            if (this.selectedParcelId > 0) {
+          // select first parcel if not set
+          if (this.selectedParcelId > 0) {
 
-              console.debug(internalParcels.find(p => p.parcel_id === this.selectedParcelId));
+            console.debug(internalParcels.find(p => p.parcel_id === this.selectedParcelId));
 
-              // check if selectedParcelId is part of the parcel list first
-              if (this.parcels.find(p => p.parcel_id === this.selectedParcelId) !== undefined) {
-                // reset selectedParcelId
-                console.debug("setting first parcel as current parcel id!");
-                this.selectedParcelId = internalParcels[0].parcel_id;
-              }
-            }
-            else {
+            // check if selectedParcelId is part of the parcel list first
+            if (this.parcels.find(p => p.parcel_id === this.selectedParcelId) !== undefined) {
               // reset selectedParcelId
-              console.debug(this.parcels);
               console.debug("setting first parcel as current parcel id!");
               this.selectedParcelId = internalParcels[0].parcel_id;
             }
-
-            console.debug("selected parcel id: "+ this.selectedParcelId);
-
-            // get detail parcel data now for current
-            // this is the case at the time of loading of the widget
-            // later it will update the parcel's details with the watcher on selectedParcelId
-            this.getParcelsAttributes(this.selectedParcelId);
+          } else {
+            // reset selectedParcelId
+            console.debug(this.parcels);
+            console.debug("setting first parcel as current parcel id!");
+            this.selectedParcelId = internalParcels[0].parcel_id;
           }
-        }.bind(this);
-        xmlHttp.open("GET", this.getApiUrl(endpoint) + params, async);
-        xmlHttp.send();
+
+          console.debug("selected parcel id: " + this.selectedParcelId);
+
+          // get detail parcel data now for current
+          // this is the case at the time of loading of the widget
+          // later it will update the parcel's details with the watcher on selectedParcelId
+          this.getParcelsAttributes(this.selectedParcelId);
+        }
+      }.bind(this);
+      xmlHttp.open("GET", this.getApiUrl(endpoint) + params, async);
+      xmlHttp.send();
     },
     getParcelsAttributes(parcel_id) {
 
@@ -585,13 +619,13 @@ Vue.component('gc-parceldata', {
       //Show requests on the DEBUG console for developers
       console.debug("getParcelsAttributes()");
       console.debug("GET " + this.getApiUrl(endpoint));
-      
+
       // Axios implement start
       axios({
         method: 'GET',
         url: this.getApiUrl(endpoint),
       }).then(function (response) {
-        if(response.status === 200){
+        if (response.status === 200) {
           var tmp = response.data;
           var row = this.currentParcel;
 
@@ -619,7 +653,7 @@ Vue.component('gc-parceldata', {
             Vue.set(row, "promotion", obj.promotion);
             //Vue.set(row, "centroid", obj.centroid);
             //Vue.set(row, "geometry", obj.geometry);
-            
+
           }
         } else {
           console.log(response)
@@ -631,27 +665,25 @@ Vue.component('gc-parceldata', {
     },
     setPaginationOffset(offset) {
 
-      console.debug("change: "+ offset);
-      console.debug("current val: "+this.offset);
-  
+      console.debug("change: " + offset);
+      console.debug("current val: " + this.offset);
+
       let newOffset = this.offset + offset;
       if (newOffset >= 0) {
-          console.debug("new offset: "+ newOffset);
-          
-          if (newOffset <= this.total_parcel_count) {
-              console.debug("setting offset");
-              this.offset += offset;
-          }
-          else {
-              console.debug("total_parcel_count reached!")
-              console.debug("total: "+this.total_parcel_count);
-              console.debug("offset: "+this.offset);
-          }
-      }
-      else {
-          console.debug("Min_offset reached!")
-          this.offset = 0;
-          console.debug(this.offset);
+        console.debug("new offset: " + newOffset);
+
+        if (newOffset <= this.total_parcel_count) {
+          console.debug("setting offset");
+          this.offset += offset;
+        } else {
+          console.debug("total_parcel_count reached!")
+          console.debug("total: " + this.total_parcel_count);
+          console.debug("offset: " + this.offset);
+        }
+      } else {
+        console.debug("Min_offset reached!")
+        this.offset = 0;
+        console.debug(this.offset);
       }
     },
     setPaginationStart() {
@@ -665,8 +697,7 @@ Vue.component('gc-parceldata', {
     toggleParcelData() {
       this.gcWidgetCollapsed = !this.gcWidgetCollapsed;
     },
-    setCurrentParcelId(event) {
-    },
+    setCurrentParcelId(event) {},
     changeLanguage() {
       this.$i18n.locale = this.currentLanguage;
     },
