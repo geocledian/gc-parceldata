@@ -484,7 +484,7 @@ Vue.component('gc-parceldata', {
         protocol + '://' + this.gcProxy + this.apiBaseUrl + endpoint :
         protocol + '://' + this.gcHost + this.apiBaseUrl + endpoint + "?key=" + this.apiKey);
     },
-    getParcelTotalCount: function (filterString) {
+    getParcelTotalCount: async function (filterString) {
 
       const endpoint = "/parcels";
       let params;
@@ -497,7 +497,7 @@ Vue.component('gc-parceldata', {
       }
       console.debug(params)
       let xmlHttp = new XMLHttpRequest();
-      let async = true;
+      let async = false;
 
       //Show requests on the DEBUG console for developers
       console.debug("getParcelTotalCount()");
@@ -549,6 +549,7 @@ Vue.component('gc-parceldata', {
       }
 
       let xmlHttp = new XMLHttpRequest();
+      // important that this is true for refreshing the parcels after a new parcel is drawn in the map!
       let async = true;
 
       //Show requests on the DEBUG console for developers
